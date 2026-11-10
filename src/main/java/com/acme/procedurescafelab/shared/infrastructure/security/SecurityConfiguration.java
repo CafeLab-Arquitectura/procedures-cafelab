@@ -10,8 +10,6 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfiguration {
 
-    private static final String DEFECTS_API = "/api/v1/defects/**";
-    private static final String CALIBRATIONS_API = "/api/v1/calibrations/**";
     private static final String CUPPING_SESSIONS_API = "/api/v1/cupping-sessions/**";
     private static final String PORTFOLIO_API = "/api/v1/portfolios/**";
     private static final String RECIPE_API = "/api/v1/recipes/**";
@@ -24,8 +22,6 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> auth.requestMatchers(
-            DEFECTS_API,
-            CALIBRATIONS_API,
             CUPPING_SESSIONS_API,
             PORTFOLIO_API,
             RECIPE_API,
@@ -36,8 +32,6 @@ public class SecurityConfiguration {
             OPEN_API
         ).permitAll().anyRequest().authenticated())
                 .csrf(csrf -> csrf.ignoringRequestMatchers(
-                    DEFECTS_API,
-                    CALIBRATIONS_API,
                     CUPPING_SESSIONS_API,
                     PORTFOLIO_API,
                     RECIPE_API,
