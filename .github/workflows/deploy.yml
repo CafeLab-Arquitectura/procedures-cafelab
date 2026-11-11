@@ -33,12 +33,18 @@ jobs:
           OCI_SSH_KEY: ${{ secrets.OCI_SSH_KEY }}
         run: |
           mkdir -p ~/.ssh
-          echo "$OCI_SSH_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+          printf "%s\n" "$OCI_SSH_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
+          
+          # Depurar formato de la clave SSH (sin mostrar el contenido privado)
+          echo "Line count: $(wc -l < ~/.ssh/id_rsa)"
+          echo "Byte count: $(wc -c < ~/.ssh/id_rsa)"
+          ssh-keygen -y -e -f ~/.ssh/id_rsa >/dev/null || echo "Clave privada no pudo ser leida por ssh-keygen"
+          
           ssh-keyscan -H "$OCI_HOST" >> ~/.ssh/known_hosts 2>/dev/null
           
           # Copiar artefacto renombrado a app.jar
-          scp -o StrictHostKeyChecking=no target/*.jar "$OCI_USERNAME@$OCI_HOST:/home/opc/cafelab-stack/procedures/app.jar"
+          scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no target/*.jar "$OCI_USERNAME@$OCI_HOST:/home/opc/cafelab-stack/procedures/app.jar"
           
           # Reconstruir contenedor en la VM
-          ssh -o StrictHostKeyChecking=no "$OCI_USERNAME@$OCI_HOST" "cd /home/opc/cafelab-stack && sudo docker compose up -d --build procedures-service"
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no "$OCI_USERNAME@$OCI_HOST" "cd /home/opc/cafelab-stack && sudo docker compose up -d --build procedures-service"
