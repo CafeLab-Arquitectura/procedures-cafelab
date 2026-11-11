@@ -1395,3 +1395,4 @@ Los tres servicios se registran por separado en Eureka y el gateway conserva las
 DB_URL permite configurar una base PostgreSQL exclusiva de Procedure; si no se define, se conserva la URL Supabase anterior.
 DB_USERNAME, DB_PASSWORD y SUPABASE_PROJECT_REF mantienen su comportamiento anterior.
 La extraccion de codigo no modifica datos ni elimina tablas de una base existente. Antes de cambiar DB_URL, seguir [la guia de migracion](../calibrations-cafelab/MIGRATION.md).
+
