@@ -1,0 +1,37 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: procedures-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: procedures_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: cafelabpassword123
+    ports:
+      - "5436:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  procedures:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: procedures-cafelab:latest
+    container_name: procedures-service
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    ports:
+      - "8083:8083"
+    environment:
+      - PORT=8083
+      - SPRING_APPLICATION_NAME=Procedures-CafeLab
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/procedures_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=cafelabpassword123
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=cafelabpassword123
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+
+volumes:
+  pgdata:
